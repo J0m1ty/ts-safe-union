@@ -49,7 +49,7 @@ const handleRequest = (request: RequestStateWithCommon) => {
 };
 ```
 
-## Problem Solved
+## Reasoning
 
 In TypeScript, when working with discriminated unions, you normally can't destructure properties that don't exist on all members of the union:
 
