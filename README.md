@@ -12,15 +12,20 @@ A TypeScript utility for safely destructuring discriminated unions while maintai
 npm install ts-safe-union
 ```
 
-## Example
+## API and Examples
+
+### DiscriminatedUnion
+
+Use `DiscriminatedUnion` when you have a well-defined discriminating property (e.g. `status`, `type`, etc.) or you have many states. See ./examples for more.
 
 ```typescript
 import { DiscriminatedUnion } from "ts-safe-union";
 
 // Define your discriminated union type
 type RequestState = DiscriminatedUnion<
-  "status",
+  "status", // The discriminator property name
   {
+    // Each key defines a variant with its properties
     loading: { progress: number };
     success: { data: unknown };
     error: { error: Error };
@@ -33,8 +38,8 @@ type RequestStateWithCommon = RequestState & {
   timestamp: number;
 };
 
+// Example implementation
 const handleRequest = (request: RequestStateWithCommon) => {
-  // Can destructure everything safely
   const { status, id, timestamp, progress, data, error } = request;
 
   console.log(`Processing request ${id} from ${timestamp}`);
@@ -49,20 +54,63 @@ const handleRequest = (request: RequestStateWithCommon) => {
 };
 ```
 
-## Problem Solved
+### MergedUnion
+
+Use `MergedUnion` when you want to merge two existing object types into a single union while maintaining safe property access. See ./examples for more.
+
+```typescript
+import { MergedUnion } from "ts-safe-union";
+
+// Define your individual state types
+type Success = { state: "success"; data: unknown };
+type Error = { state: "error"; error: Error };
+
+// Merge them into a union type
+type RequestState = MergedUnion<Success, Error>;
+
+const handleRequest = (request: RequestState) => {
+  const { state, data, error } = request;
+
+  if (state === "success") {
+    console.log(`Success: ${JSON.stringify(data)}`);
+  } else {
+    console.log(`Error: ${error.message}`);
+  }
+};
+```
+
+## Reasoning
 
 In TypeScript, when working with discriminated unions, you normally can't destructure properties that don't exist on all members of the union:
 
 ```typescript
-type StateA = { state: 'A'; A: number };
-type StateB = { state: 'B'; B: string };
+// Before: Normal TypeScript union
+type StateA = { state: "A"; A: number };
+type StateB = { state: "B"; B: string };
 type State = StateA | StateB;
 
 // Error: Property 'B' does not exist on type 'StateA'
 const { state, A, B } = someState;
+
+// After: Using DiscriminatedUnion
+type State = DiscriminatedUnion<
+  "state",
+  {
+    A: { A: number };
+    B: { B: string };
+  }
+>;
+
+// Works! Properties are safely destructurable
+const { state, A, B } = someState;
 ```
 
-This utility solves that problem while preserving type checking when you check the discriminator value, among other things.
+## Examples
+
+Check out the [examples directory](./examples) for more practical use cases:
+
+- [Discriminated Union Example](./examples/discriminated-union.ts) - Authentication state management
+- [Merged Union Example](./examples/merged-union.ts) - Task processing state
 
 ## Contributing
 
@@ -75,4 +123,4 @@ Contributions are welcome! Please feel free to submit a PR. Make sure to:
 
 ## License
 
-MIT © Jonathan Schultz
+MIT © Jomity

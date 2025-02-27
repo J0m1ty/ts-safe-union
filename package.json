@@ -1,7 +1,7 @@
 {
   "name": "ts-safe-union",
   "version": "1.0.0",
-  "description": "A TypeScript utility for safely destructuring discriminated unions while maintaining type safety",
+  "description": "A TypeScript utility for safely destructuring union types while maintaining type safety",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -16,7 +16,7 @@
   "keywords": [
     "typescript",
     "union",
-    "discriminated-union",
+    "safe-union",
     "type-safety",
     "destructuring"
   ],
