@@ -12,11 +12,11 @@ A TypeScript utility for safely destructuring discriminated unions while maintai
 npm install ts-safe-union
 ```
 
-## API and Examples
+## API
 
 ### DiscriminatedUnion
 
-Use `DiscriminatedUnion` when you have a well-defined discriminating property (e.g. `status`, `type`, etc.) or you have many states. See ./examples for more.
+Use `DiscriminatedUnion` when you have a well-defined discriminating property (e.g. `status`, `type`, etc.) or you have many states.
 
 ```typescript
 import { DiscriminatedUnion } from "ts-safe-union";
@@ -56,7 +56,7 @@ const handleRequest = (request: RequestStateWithCommon) => {
 
 ### MergedUnion
 
-Use `MergedUnion` when you want to merge two existing object types into a single union while maintaining safe property access. See ./examples for more.
+Use `MergedUnion` when you want to merge two existing object types into a single union while maintaining safe property access.
 
 ```typescript
 import { MergedUnion } from "ts-safe-union";
@@ -78,6 +78,13 @@ const handleRequest = (request: RequestState) => {
   }
 };
 ```
+
+## More Examples
+
+Check out the [examples directory](./examples) for more practical use cases:
+
+- [Discriminated Union Example](./examples/discriminated-union.ts) - Authentication state management
+- [Merged Union Example](./examples/merged-union.ts) - Task processing state
 
 ## Reasoning
 
@@ -104,13 +111,6 @@ type State = DiscriminatedUnion<
 // Works! Properties are safely destructurable
 const { state, A, B } = someState;
 ```
-
-## Examples
-
-Check out the [examples directory](./examples) for more practical use cases:
-
-- [Discriminated Union Example](./examples/discriminated-union.ts) - Authentication state management
-- [Merged Union Example](./examples/merged-union.ts) - Task processing state
 
 ## Contributing
 
