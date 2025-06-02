@@ -16,9 +16,9 @@ type UnionKeys<U> = U extends any ? keyof U : never;
  *   3. Adds any missing keys from `AllKeys` as optional   `?: undefined`
  * 
  * 
- * @template TagName        literal tag that identifies this member (e.g. 'circle')
+ * @template TagName        literal tag that identifies this member (e.g. "circle")
  * @template Member         object type supplied for this tag (e.g. { radius: number })
- * @template Discriminator  key that stores the tag (e.g. 'kind')
+ * @template Discriminator  key that stores the tag (e.g. "kind")
  * @template AllKeys        union of keys across all members
  */
 type BuildMember<
@@ -37,7 +37,7 @@ type BuildMember<
 * @example
 * ```ts
 * type RequestState = DiscriminatedUnion<
-*   'status',
+*   "status",
 *   {
 *     loading: { progress: number };
 *     success: { data: unknown };
@@ -76,10 +76,10 @@ type Expand<T> = { [K in keyof T]: T[K]; }
  * type AB = MergedUnion<A, B>;
  */
 export type MergedUnion<
-    A extends object,
-    B extends object
+    First extends object,
+    Second extends object
 > = Expand<
-    { [K in Extract<keyof A, keyof B>]: A[K] | B[K] } &
-    { [K in Exclude<keyof A, keyof B>]?: A[K] } &
-    { [K in Exclude<keyof B, keyof A>]?: B[K] }
+    { [K in Extract<keyof First, keyof Second>]: First[K] | Second[K] } &
+    { [K in Exclude<keyof First, keyof Second>]?: First[K] } &
+    { [K in Exclude<keyof Second, keyof First>]?: Second[K] }
 >;

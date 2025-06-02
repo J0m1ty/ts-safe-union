@@ -4,7 +4,7 @@
 [![Build Status](https://github.com/J0m1ty/ts-safe-union/workflows/CI/badge.svg)](https://github.com/J0m1ty/ts-safe-union/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A TypeScript utility for destructuring discriminated unions while maintaining type safety. This package is tiny (no dependencies) and is niche but simple to use and solves a common problem in Typescript. Broadly, this package helps with:
+A TypeScript utility for destructuring discriminated unions while maintaining type safety. This package is tiny (no dependencies) and solves a common problem in Typescript. Broadly, this package helps with:
 - Safely destructuring discriminated unions
 - Making switch/case statements exhaustive
 - Improving state management patterns
@@ -67,17 +67,9 @@ type RequestState = DiscriminatedUnion<
   }
 >;
 
-// Optional: Define common properties
-type RequestStateWithCommon = RequestState & {
-  id: string;
-  timestamp: number;
-};
-
-// Example implementation
+// Example request consumer
 const handleRequest = (request: RequestStateWithCommon) => {
-  const { status, id, timestamp, progress, data, error } = request;
-
-  console.log(`Processing request ${id} from ${timestamp}`);
+  const { status, progress, data, error } = request;
 
   if (status === "loading") {
     console.log(`Loading: ${progress}%`);
@@ -87,6 +79,23 @@ const handleRequest = (request: RequestStateWithCommon) => {
     console.log(`Error: ${error.message}`);
   }
 };
+```
+
+If you want to define your keys elsewhere, you can provide them to the Discriminated Union and the TS complier will give you errors if some variant are not supplied in the list. For example, the following example will have a type error because the error variant is not specified.
+
+```typescript
+import { DiscriminatedUnion } from "ts-safe-union";
+
+const statusKeys = ["loading", "success", "error"] as const;
+
+type RequestState = DiscriminatedUnion<
+  "status",
+  {
+    loading: { progress: number };
+    success: { data: unknown };
+  },
+  typeof statusKeys[number] // << error here
+>;
 ```
 
 ### MergedUnion
@@ -123,12 +132,11 @@ Check out the [examples directory](./examples) for simple but practical use case
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a PR. Make sure to:
+Contributions are welcome! Please feel free to submit a PR. If you feel comfortable, also:
 
 1. Add tests for any new features
 2. Update documentation if needed
-3. Follow the existing code style
-4. Ensure all tests pass by running `npm test`
+3. Ensure all tests pass by running `npm test`
 
 ## License
 
