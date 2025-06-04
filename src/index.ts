@@ -61,25 +61,18 @@ export type DiscriminatedUnion<
 }[Tags];
 
 /**
- * Cleanly expands union types into a single object type.
- */
-type Expand<T> = { [K in keyof T]: T[K]; }
-
-/**
- * Merge two object types so that properties present in both objects become a union of their types and properties exclusive to one side are kept optional.
- *
+ * Create a destructurable discriminated-union from two object types. Each branch of the resulting union is the original object plus every property that exists only in the other object, but those extra properties are made optional.  
+ * 
  * @example
  * ```ts
- * type A = { id: string; name: string };
- * type B = { id: number; age: number };
+ * type A = { success: true; result: number };
+ * type B = { success: false; error: string };
  *
  * type AB = MergedUnion<A, B>;
  */
 export type MergedUnion<
-    First extends object,
-    Second extends object
-> = Expand<
-    { [K in Extract<keyof First, keyof Second>]: First[K] | Second[K] } &
-    { [K in Exclude<keyof First, keyof Second>]?: First[K] } &
-    { [K in Exclude<keyof Second, keyof First>]?: Second[K] }
->;
+    A extends object,
+    B extends object
+> =
+    | (A & Partial<Omit<B, keyof A>>)
+    | (B & Partial<Omit<A, keyof B>>);
